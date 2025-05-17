@@ -67,7 +67,7 @@
         trash: types
       };
 
-      fetch("https://script.google.com/macros/s/AKfycbwONI00P8j8kJzvW05qt9bDTI_5lSH_zhJvPr8CgVqFbVYgxCroKnqxd3PMkSTjqVrE/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbwwiRPaIfXv0EGg-dSMbhEf6UjQC_JvfTJZRNROsp-CXe6js_tSGpR-cnxAJ-rMGb8N/exec", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -94,7 +94,7 @@
     });
 
     // 🔽 Googleスプレッドシートからデータ読み込んでマーカー表示
-    fetch("https://script.google.com/macros/s/AKfycbwONI00P8j8kJzvW05qt9bDTI_5lSH_zhJvPr8CgVqFbVYgxCroKnqxd3PMkSTjqVrE/exec")
+    fetch("https://script.google.com/macros/s/AKfycbwwiRPaIfXv0EGg-dSMbhEf6UjQC_JvfTJZRNROsp-CXe6js_tSGpR-cnxAJ-rMGb8N/exec")
       .then(response => response.json())
       .then(data => {
         data.forEach(entry => {
