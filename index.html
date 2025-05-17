@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ごみ拾いマップ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+
+
+    #map { height: 80vh; width: 100%; }
+    #form { padding: 10px; }
+    label { display: block; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>ごみ拾いマップ</h2>
+  <p>地図をクリックして位置を指定し、情報を入力してください。</p>
+
+  <div id="map"></div>
+  <div id="form" style="display: none;">
+    <form id="trashForm">
+      <label>時間帯:
+        <select id="timeOfDay" required>
+          <option value="">選択してください</option>
+          <option value="朝">朝</option>
+          <option value="昼">昼</option>
+          <option value="夜">夜</option>
+        </select>
+      </label>
+      <label>ごみの種類（自由記入可）:
+        <input type="text" id="trashType" placeholder="例: 空き缶, ペットボトル">
+      </label>
+      <button type="submit">記録する</button>
+    </form>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([35.0, 135.0], 5);
+    let currentLatLng = null;
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    map.on('click', function(e) {
+      currentLatLng = e.latlng;
+      document.getElementById("form").style.display = "block";
+    });
+
+    document.getElementById("trashForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const time = document.getElementById("timeOfDay").value;
+      const types = document.getElementById("trashType").value;
+
+      if (!currentLatLng || !time || types.trim() === "") {
+        alert("全ての項目を入力してください");
+        return;
+      }
+
+      const postData = {
+        lat: currentLatLng.lat,
+        lng: currentLatLng.lng,
+        time: time,
+        trash: types
+      };
+
+      fetch("https://script.google.com/macros/s/AKfycbx-bK11ljMYw05-xru8r-Mx9egXp0dhCham-7_HQ3XviF5AOF7BvhjFL_6Tf1BsvOUy/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(postData)
+      });
+
+      let color = "gray";
+      if (time === "朝") color = "lightblue";
+      else if (time === "昼") color = "orange";
+      else if (time === "夜") color = "darkblue";
+
+      const marker = L.circleMarker(currentLatLng, {
+        radius: 8,
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.8
+      }).addTo(map);
+
+      marker.bindPopup(時間帯: ${time}<br>ごみの種類: ${types}).openPopup();
+
+      document.getElementById("trashForm").reset();
+      document.getElementById("form").style.display = "none";
+    });
+
+    // 🔽 Googleスプレッドシートからデータ読み込んでマーカー表示
+    fetch("https://script.google.com/macros/s/AKfycbx-bK11ljMYw05-xru8r-Mx9egXp0dhCham-7_HQ3XviF5AOF7BvhjFL_6Tf1BsvOUy/exec")
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(entry => {
+          const lat = parseFloat(entry.lat);
+          const lng = parseFloat(entry.lng);
+          const time = entry.time;
+          const types = entry.trash || entry.types;
+
+          let color = "gray";
+          if (time === "朝") color = "lightblue";
+          else if (time === "昼") color = "orange";
+          else if (time === "夜") color = "darkblue";
+
+          const marker = L.circleMarker([lat, lng], {
+            radius: 8,
+            color: color,
+            fillColor: color,
+            fillOpacity: 0.8
+          }).addTo(map);
+          marker.bindPopup(時間帯: ${time}<br>ごみの種類: ${types});
+        });
+      })
+      .catch(error => console.error("スプレッドシートの読み込み失敗:", error));
+  </script>
+</body>
+</html>
+スプレッドシートのコード
+function myFunction() {
+  
+}
