@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-
-
     #map { height: 80vh; width: 100%; }
     #form { padding: 10px; }
     label { display: block; margin-top: 10px; }
@@ -87,13 +85,12 @@
         fillOpacity: 0.8
       }).addTo(map);
 
-      marker.bindPopup(時間帯: ${time}<br>ごみの種類: ${types}).openPopup();
+      marker.bindPopup(`時間帯: ${time}<br>ごみの種類: ${types}`).openPopup();
 
       document.getElementById("trashForm").reset();
       document.getElementById("form").style.display = "none";
     });
 
-    // 🔽 Googleスプレッドシートからデータ読み込んでマーカー表示
     fetch("https://script.google.com/macros/s/AKfycbwwiRPaIfXv0EGg-dSMbhEf6UjQC_JvfTJZRNROsp-CXe6js_tSGpR-cnxAJ-rMGb8N/exec")
       .then(response => response.json())
       .then(data => {
@@ -114,14 +111,10 @@
             fillColor: color,
             fillOpacity: 0.8
           }).addTo(map);
-          marker.bindPopup(時間帯: ${time}<br>ごみの種類: ${types});
+          marker.bindPopup(`時間帯: ${time}<br>ごみの種類: ${types}`);
         });
       })
       .catch(error => console.error("スプレッドシートの読み込み失敗:", error));
   </script>
 </body>
 </html>
-スプレッドシートのコード
-function myFunction() {
-  
-}
